@@ -63,8 +63,23 @@ Consistency check output levels:
 ## 4) Step 2 / 2.5 / 3
 
 - Step 2: coding agent executes per tasks.md → create `S1` snapshot.
-- Step 2.5: coding agent self-runs smoke test (compile, unit tests, basic function).
-  - FAIL → self-fix max 2 times → still FAIL → enter Step 4 with failure logs.
+- Step 2.5: coding agent executes **standardized smoke test checklist** (`references/smoke-test-checklist.md`):
+  - ✅ Core function paths (happy path)
+  - ✅ Boundary conditions (empty input, extreme values, invalid input)
+  - ✅ Dependency checks (external services, config files, env vars)
+  - ✅ Performance baseline (optional, L2/L3 recommended)
+  - **Failure classification**:
+    - **Syntax/compile errors** → self-fix max 2 times → still FAIL → structured failure report → Step 4
+    - **Logic/function errors** → structured failure report → Step 4
+  - **Structured failure report format**:
+    ```json
+    {
+      "status": "SMOKE_FAILED",
+      "failed_items": [{"category": "...", "item": "...", "error": "...", "location": "...", "suggestion": "..."}],
+      "passed_items": ["..."],
+      "logs": "..."
+    }
+    ```
 - Step 3: cross-model review — the opposite model family reviews the code.
   - Type A (coding=sonnet/Claude): review uses codex/high.
   - Type B (coding=codex/GPT): review uses sonnet/medium.
