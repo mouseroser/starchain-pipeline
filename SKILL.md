@@ -45,26 +45,26 @@ main（小光，读取本 SKILL.md 后充当编排中心）
 
 ### Workspace 架构
 
-**单一 Workspace 原则**：
-- `~/.openclaw/workspace/` - 唯一的工作区，所有 agent 共享
-- 所有 agent 在同一个 workspace 中工作，通过子目录组织文件
+**Agent 工作目录**：
+- `~/.openclaw/agents/brainstorming/workspace/specs/` - Spec-Kit 产物
+- `~/.openclaw/agents/gemini/workspace/reports/` - 分析报告
+- `~/.openclaw/agents/coding/workspace/` - 代码产物
+- `~/.openclaw/agents/{agent}/workspace/` - 各 agent 的工作产物
 
-**目录结构**：
-- `workspace/shared-context/` - 跨 agent 共享上下文 (THESIS.md, FEEDBACK-LOG.md, SIGNALS.md)
-- `workspace/intel/` - Agent 协作文件（单写者原则，多读者）
-- `workspace/specs/` - Spec-Kit 产物 (spec.md, plan.md, tasks.md, research.md)
-- `workspace/benchmarks/` - 性能基准记录
-- `workspace/cache/` - 任务指纹缓存
+**共享 Workspace**：
+- `~/.openclaw/workspace/` - Main agent 和跨 agent 协作
+- `workspace/intel/` - Agent 协作文件（单写者原则）
+  - `1-MONITOR-TRENDS.md` - monitor-bot 写入
+  - `2-BRAINSTORM-IDEAS.md` - brainstorming 写入
+- `workspace/shared-context/` - 跨 agent 共享上下文
+  - THESIS.md, FEEDBACK-LOG.md, SIGNALS.md
 - `workspace/memory/` - 记忆文件
-- `workspace/*.json` - 历史记录 (epoch-history.json, classification-history.json, cost-tracking.json)
-
-**Agent 配置**：
-- `~/.openclaw/agents/{agent}/` - 每个 agent 的配置文件 (AGENTS.md, SOUL.md, IDENTITY.md)
+- `workspace/*.json` - 历史记录
 
 **文件传递规则**：
-- Sub-agent 在共享 workspace 中工作
-- 产出文件保存到相应子目录（specs/, benchmarks/, cache/ 等）
-- 跨 agent 协作通过 intel/ 目录（单写者原则）
+- 每个 agent 在自己的 workspace 中生成工作产物
+- 通过 intel/ 目录传递摘要或索引（单写者原则）
+- Main agent 或其他 agent 直接读取 agent workspace 获取完整产物
 
 ### 知识层集成（珊瑚 NotebookLM）
 - Step 1.5：spawn 珊瑚查询 openclaw-docs / memory notebook 获取相关上下文
