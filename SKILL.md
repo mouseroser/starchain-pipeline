@@ -45,14 +45,8 @@ main（小光，读取本 SKILL.md 后充当编排中心）
 
 ### Workspace 架构
 
-**Agent 工作目录**：
-- `~/.openclaw/agents/brainstorming/specs/` - Spec-Kit 产物
-- `~/.openclaw/agents/gemini/reports/` - 分析报告
-- `~/.openclaw/agents/coding/` - 代码产物
-- `~/.openclaw/agents/{agent}/` - 各 agent 的工作产物直接放在 agent 目录下
-
-**共享 Workspace**：
-- `~/.openclaw/workspace/` - Main agent 和跨 agent 协作
+**Main Agent 工作目录**：
+- `~/.openclaw/workspace/` - Main agent (小光) 的工作目录
 - `workspace/intel/` - Agent 协作文件（单写者原则）
   - `1-MONITOR-TRENDS.md` - monitor-bot 写入
   - `2-BRAINSTORM-IDEAS.md` - brainstorming 写入
@@ -61,10 +55,22 @@ main（小光，读取本 SKILL.md 后充当编排中心）
 - `workspace/memory/` - 记忆文件
 - `workspace/*.json` - 历史记录
 
+**Sub-Agent 工作目录**：
+- `~/.openclaw/workspace/agents/brainstorming/` - Spec-Kit 产物
+  - `specs/` - 规格文档
+- `~/.openclaw/workspace/agents/gemini/` - 分析报告
+  - `reports/` - 研究报告
+- `~/.openclaw/workspace/agents/coding/` - 代码产物
+- `~/.openclaw/workspace/agents/review/` - 审查产物
+- `~/.openclaw/workspace/agents/test/` - 测试产物
+- `~/.openclaw/workspace/agents/docs/` - 文档产物
+- `~/.openclaw/workspace/agents/notebooklm/` - NotebookLM 产物
+- `~/.openclaw/workspace/agents/{agent}/` - 各 agent 的工作产物
+
 **文件传递规则**：
-- 每个 agent 在自己的目录中生成工作产物
-- 通过 intel/ 目录传递摘要或索引（单写者原则）
-- Main agent 或其他 agent 直接读取 agent 目录获取完整产物
+- 每个 agent 在自己的 workspace 目录中生成工作产物
+- 通过 `~/.openclaw/workspace/intel/` 目录传递摘要或索引（单写者原则）
+- Main agent 或其他 agent 直接读取对应 agent 的 workspace 目录获取完整产物
 
 ### 知识层集成（珊瑚 NotebookLM）
 - Step 1.5：spawn 珊瑚查询 openclaw-docs / memory notebook 获取相关上下文
@@ -213,9 +219,9 @@ main 编排每轮：
 4. 回到 Step 3（spawn review 审查）
 
 **模型与 Thinking Level 配置（质量优先 + 成本优化）**：
-- R1: brainstorming sonnet/low + coding codex/medium
-- R2: brainstorming sonnet/medium + coding codex/medium
-- R3: brainstorming opus/high + coding codex/xhigh
+- R1: brainstorming sonnet/low + coding gpt/medium
+- R2: brainstorming sonnet/medium + coding gpt/medium
+- R3: brainstorming opus/high + coding gpt/xhigh
 - R3 仍 NEEDS_FIX → Step 5.5
 
 ### Step 5：全量测试

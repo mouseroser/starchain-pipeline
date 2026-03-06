@@ -18,8 +18,8 @@
 
   1. 📋 Classify level → L1 / L2 / L3
   2. 📋 Classify type →
-       A 业务/架构 → coding(sonnet/medium) + review(codex/high) + test(codex/medium)
-       B 算法/性能 → coding(codex/medium) + review(sonnet/medium) + test(sonnet/medium)
+       A 业务/架构 → coding(sonnet/medium) + review(gpt/high) + test(gpt/medium)
+       B 算法/性能 → coding(gpt/medium) + review(sonnet/medium) + test(sonnet/medium)
        C 混合     → 拆分走 A/B
   3. 输出结构化分配单 → 📋 监控群
 
@@ -102,7 +102,7 @@
        ▼                    ▼
   ┌──────────────┐   ┌──────────────┐
   │ 💻 coding   │   │ 💻 coding   │
-  │ (sonnet/med)│   │ (codex/med) │
+  │ (sonnet/med)│   │ (gpt/med)   │
   │  (Type A)   │   │  (Type B)   │
   └──────┬───────┘   └──────┬───────┘
          └───────┬───────────┘
@@ -132,11 +132,11 @@
 
   main 根据 Step 1 判定的 Type 动态 spawn：
 
-  Type A: coding(sonnet) 代码 → review(codex/high) 交叉审查
-  Type B: coding(codex) 代码 → review(sonnet/medium) 交叉审查
+  Type A: coding(sonnet) 代码 → review(gpt/high) 交叉审查
+  Type B: coding(gpt) 代码 → review(sonnet/medium) 交叉审查
 
   分歧仲裁（reviewer 提出问题 + coder 反驳时触发）：
-    → review(opus/medium) + coding(codex/xhigh)
+    → review(opus/medium) + coding(gpt/xhigh)
     → 如果 coder 不反驳，reviewer 判定直接生效，无需仲裁
 
   输出结构化 JSON：
@@ -173,9 +173,9 @@
   │ - 冒烟测试失败日志（如有）                            │
   └─────────────────────────────────────────────────────┘
 
-  🔁 R1: brainstorming sonnet/medium + coding codex/medium → Step 3
-  🔁 R2: brainstorming sonnet/medium + coding codex/medium → Step 3
-  🔁 R3: brainstorming opus/high + coding codex/xhigh → Step 3
+  🔁 R1: brainstorming sonnet/medium + coding gpt/medium → Step 3
+  🔁 R2: brainstorming sonnet/medium + coding gpt/medium → Step 3
+  🔁 R3: brainstorming opus/high + coding gpt/xhigh → Step 3
 
        ✅ Step 3 PASS / PASS_WITH_NOTES → Step 5
        ❌ R3 still NEEDS_FIX → Step 5.5 (Epoch Fallback)
@@ -191,7 +191,7 @@
        ▼                    ▼
   ┌──────────────┐   ┌──────────────┐
   │ 🧪 test     │   │ 🧪 test     │
-  │ (codex/med) │   │ (sonnet/med)│
+  │ (gpt/med)   │   │ (sonnet/med)│
   │  (Type A)   │   │  (Type B)   │
   └──────┬───────┘   └──────┬───────┘
          └───────┬───────────┘
@@ -308,27 +308,27 @@
 │  Type A (业务/架构)                                      │
 ├─────────────────────────────────────────────────────────┤
 │  Step 2:  coding → sonnet/medium                        │
-│  Step 3:  review → codex/high                           │
-│  Step 5:  test → codex/medium                           │
-│  仲裁:    review(opus/medium) + coding(codex/xhigh)     │
+│  Step 3:  review → gpt/high                             │
+│  Step 5:  test → gpt/medium                             │
+│  仲裁:    review(opus/medium) + coding(gpt/xhigh)       │
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
 │  Type B (算法/性能)                                      │
 ├─────────────────────────────────────────────────────────┤
-│  Step 2:  coding → codex/medium                         │
+│  Step 2:  coding → gpt/medium                           │
 │  Step 3:  review → sonnet/medium                        │
 │  Step 5:  test → sonnet/medium                          │
-│  仲裁:    review(opus/medium) + coding(codex/xhigh)     │
+│  仲裁:    review(opus/medium) + coding(gpt/xhigh)       │
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
 │  修复升级路径（所有 Type）                               │
 ├─────────────────────────────────────────────────────────┤
 │  Step 4 R1/R2: brainstorming(sonnet/medium)             │
-│                + coding(codex/medium)                   │
+│                + coding(gpt/medium)                     │
 │  Step 4 R3:    brainstorming(opus/high)                 │
-│                + coding(codex/xhigh)                    │
+│                + coding(gpt/xhigh)                      │
 │  TF-2:         brainstorming(sonnet/medium)             │
 │  TF-3:         brainstorming(opus/high)                 │
 │  Step 5.5:     brainstorming(opus/high)                 │
