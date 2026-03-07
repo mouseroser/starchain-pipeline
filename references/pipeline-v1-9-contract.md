@@ -2,6 +2,14 @@
 
 Source of truth: `PIPELINE_FLOWCHART_V1_9_EMOJI.md`.
 
+
+## 1.5) 协作材料规则
+
+- 只要是多 agent 联合工作（流水线尤为明显），除了正式产物之外全部放到 `intel/collaboration/`
+- 正式产物（报告、审查结论、修复代码、文档交付等）放各自 agent 目录
+- 非正式产物（外部 GitHub 项目、本地镜像、共享分析素材、临时脚本、调研素材等）放 `intel/collaboration/`
+- `intel/` 继续作为协作层，遵守单写者原则：一个 agent 负责写 / 更新，其他 agent 只读
+
 ## 1) Global State
 
 ```text
