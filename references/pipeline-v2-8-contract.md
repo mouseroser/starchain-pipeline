@@ -439,17 +439,29 @@ main（小光）
 
 ### 核心原则
 
-sub-agent 只返回结果给 main，**不自己推群**。所有群通知由 main 统一发出。
+sub-agent 执行 agent 自己推群（职能群 + 监控群），main 统一监控群兜底。
 
 ### 根因
 
-`sessions_spawn(mode="run")` 创建的是完全隔离的会话，无法向 Telegram 群组推送消息（sessions_spawn 硬性拒绝通道投递参数）。官方明确将 sub-agent 自推视为反模式。
+`sessions_spawn` 的 isolated session 有 Telegram 群 binding，sub-agent 可直接调用 message 工具推群。工具配置已设为 `alsoAllow: [message]`。
 
-### Main 通知规则
+### 通知类型（三类必须覆盖）
 
-- main 是唯一可靠通知节点
-- 向职能群 + 监控群双推
-- 负责：监控群可见性、补发缺失通知、最终交付通知、告警通知
+| 类型 | 触发时机 | 发往 |
+|------|---------|------|
+| **START** | agent 开始执行本步骤时 | 职能群 + 监控群 |
+| **COMPLETION** | agent 完成本步骤时（含结果摘要） | 职能群 + 监控群 |
+| **FAILURE** | agent 遇到错误/卡点时 | 职能群 + 监控群 |
+
+### 通知内容要求
+- START/COMPLETION 必须包含：步骤名称、本步骤做了什么、下一步是什么
+- FAILURE 必须包含：步骤名称、错误原因、已尝试的解决措施
+- 不得只发"done"、"开始"等空内容
+
+### main 兜底规则
+- 负责补发缺失通知
+- 负责最终交付通知
+- 负责告警通知
 
 ---
 
